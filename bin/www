@@ -1,0 +1,26 @@
+
+function initialiseAndCheckConn() {
+    const {getSnowflakeConnection} = require('../infra/snowflake');
+    return new Promise((resolve,reject) => {
+        const snowflakeConnection = getSnowflakeConnection();
+        snowflakeConnection.connect((err,conn) => {
+            if(err) {
+                console.log(`Error connecting to `);
+                reject(err);
+            } else {
+                console.log(`Succesfully connected`,conn.getId());
+                resolve();
+            }
+        })
+    })
+};
+
+initialiseAndCheckConn().then(() => {
+    const {main} = require('../index');
+    main().catch((err) => {
+        console.error('Error running Main Program:', err.message);
+    });
+    })
+    .catch((connectionError) => {
+        process.exit(connectionError);
+    });
